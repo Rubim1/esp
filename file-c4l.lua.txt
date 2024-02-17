@@ -1,0 +1,90 @@
+-- Function to create the ESP name tag
+local function createNameTag(player)
+    local nameTag = Instance.new("BillboardGui")
+    nameTag.Name = "NameTag"
+    nameTag.Size = UDim2.new(0, 100, 0, 20)
+    nameTag.AlwaysOnTop = true
+    nameTag.StudsOffset = Vector3.new(0, 3, 0)
+    nameTag.Adornee = player.Character:FindFirstChild("Head")
+
+    local playerName = Instance.new("TextLabel")
+    playerName.Name = "PlayerName"
+    playerName.Size = UDim2.new(1, 0, 0.5, 0)
+    playerName.Position = UDim2.new(0, 0, 0.5, 0)
+    playerName.BackgroundTransparency = 1
+    playerName.Text = player.Name
+    playerName.Font = Enum.Font.SourceSansBold
+    playerName.TextSize = 14
+    playerName.TextColor3 = player.TeamColor.Color
+
+    local playerHealth = Instance.new("TextLabel")
+    playerHealth.Name = "PlayerHealth"
+    playerHealth.Size = UDim2.new(1, 0, 0.5, 0)
+    playerHealth.Position = UDim2.new(0, 0, 0, 0)
+    playerHealth.BackgroundTransparency = 1
+    playerHealth.Text = "Health: " .. player.Character.Humanoid.Health
+    playerHealth.Font = Enum.Font.SourceSans
+    playerHealth.TextSize = 12
+    playerHealth.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+    nameTag.Parent = player.Character.Head
+    playerName.Parent = nameTag
+    playerHealth.Parent = nameTag
+end
+
+-- Function to update the ESP name tag
+local function updateNameTag(player)
+    local nameTag = player.Character.Head:FindFirstChild("NameTag")
+    if nameTag then
+        local playerName = nameTag:FindFirstChild("PlayerName")
+        local playerHealth = nameTag:FindFirstChild("PlayerHealth")
+        if playerName and playerHealth then
+            playerName.TextColor3 = player.TeamColor.Color
+            playerHealth.Text = "Health: " .. player.Character.Humanoid.Health
+        end
+    end
+end
+
+-- Function to remove the ESP name tag
+local function removeNameTag(player)
+    local nameTag = player.Character.Head:FindFirstChild("NameTag")
+    if nameTag then
+        nameTag:Destroy()
+    end
+end
+
+-- Event: Player added
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        createNameTag(player)
+    end)
+end)
+
+-- Event: Player removed
+game.Players.PlayerRemoving:Connect(function(player)
+    removeNameTag(player)
+end)
+
+-- Event: Character added
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        updateNameTag(player)
+    end)
+end)
+
+-- Event: Character removed
+game.Players.PlayerRemoving:Connect(function(player)
+    removeNameTag(player)
+end)
+
+-- Event: Player character added
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        updateNameTag(player)
+    end)
+end)
+
+-- Event: Player character removed
+game.Players.PlayerRemoving:Connect(function(player)
+    removeNameTag(player)
+end)
